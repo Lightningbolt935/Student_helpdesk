@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRM Connect - Incharge Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #0d5cb6 0%, #1565c0 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding-top: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left: 4px solid white;
+            padding-left: 16px;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+        }
+
+        .main-content {
+            flex: 1;
+            background: #f5f5f5;
+            overflow-y: auto;
+            padding: 30px 40px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .stat-sublabel {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #10b981;
+            color: white;
+        }
+
+        .tasks-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .tasks-section h2 {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-bottom: 25px;
+        }
+
+        .tasks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tasks-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tasks-table td {
+            padding: 18px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .tasks-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .task-id {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-progress {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .status-pending {
+            background: #f97316;
+            color: white;
+        }
+
+        .status-unassigned {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .actions-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+            padding: 5px 10px;
+        }
+
+        .actions-btn:hover {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .tasks-table {
+                font-size: 12px;
+            }
+
+            .tasks-table th,
+            .tasks-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon">🔗</div>
+            <div class="logo-text">SRM Connect</div>
+        </div>
+        <nav class="nav-menu">
+            <div class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>All Complaints Tasks</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Incharge Dashboard</h1>
+            <p>Complaints Management</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Complaints</div>
+                <div class="stat-number">4</div>
+                <div class="stat-sublabel">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending</div>
+                <div class="stat-number">1</div>
+                <div class="stat-sublabel">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completed</div>
+                <div class="stat-number">2</div>
+                <div class="stat-badge">Pending</div>
+            </div>
+        </div>
+
+        <div class="tasks-section">
+            <h2>All Assigned Tasks</h2>
+            <table class="tasks-table">
+                <thead>
+                    <tr>
+                        <th>Task ID</th>
+                        <th>Location</th>
+                        <th>Submitted Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="task-id">#28</td>
+                        <td>faculty1</td>
+                        <td>2025-09/2025</td>
+                        <td><span class="status-badge">Actions</span></td>
+                        <td><button class="actions-btn">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td class="task-id">45 Fans</td>
+                        <td>Cls 413</td>
+                        <td></td>
+                        <td><span class="status-badge status-progress">In Progress</span></td>
+                        <td><button class="actions-btn">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td class="task-id">45 AC</td>
+                        <td>Medium</td>
+                        <td></td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td><button class="actions-btn">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td class="task-id">52 Lights</td>
+                        <td>Worker B</td>
+                        <td></td>
+                        <td><span class="status-badge status-unassigned">Unassigned</span></td>
+                        <td><button class="actions-btn">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td class="task-id">68 Projector</td>
+                        <td>Sem Hall</td>
+                        <td>Worker C</td>
+                        <td></td>
+                        <td><button class="actions-btn">⋯</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.actions-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                alert('Actions menu clicked');
+            });
+        });
+    </script>
+</body>
+</html>
